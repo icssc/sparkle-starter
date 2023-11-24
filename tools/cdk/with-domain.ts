@@ -50,13 +50,18 @@ async function main() {
     throw new Error("Certificate ARN not provided.");
   }
 
+  /**
+   * Use the CloudFront Distribution provisioned by the SvelteKit construct as the target for the A record.
+   */
+  const aliasTarget = new CloudFrontTarget(sveltekit.distribution);
+
   new ARecord(stack, "a-record", {
     zone: HostedZone.fromHostedZoneAttributes(stack, "hosted-zone", {
-      zoneName: "zotmeet.com",
+      zoneName: "sparkle.com",
       hostedZoneId: process.env.HOSTED_ZONE_ID ?? "",
     }),
-    recordName: `${stage === "prod" ? "" : `${stage}.`}zotmeet`,
-    target: RecordTarget.fromAlias(new CloudFrontTarget(sveltekit.distribution)),
+    recordName: `${stage === "prod" ? "" : `${stage}.`}sparkle`,
+    target: RecordTarget.fromAlias(aliasTarget),
   });
 }
 
