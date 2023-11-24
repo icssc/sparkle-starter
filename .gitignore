@@ -52,16 +52,3 @@ Desktop.ini
 .env
 .env.*
 !.env.example
-
-## JetBrains IDE settings. https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
-.idea/*.iml
-.idea/workspace.xml
-.idea/usage.statistics.xml
-.idea/shelf
-
-## VSCode settings. Based on the following recommendation: https://stackoverflow.com/a/57749909
-.vscode/**/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
