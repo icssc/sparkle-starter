@@ -1,8 +1,17 @@
 import { SvelteKit } from "@svelte.kit/cdk";
 import { App, Stack } from "aws-cdk-lib";
-import { ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
-import { CloudFrontTarget } from "aws-cdk-lib/aws-route53-targets";
 
+/**
+ * The SvelteKit construct only provisions the minimal resources need to support a SvelteKit SSR app.
+ *
+ * The main components include:
+ * - CloudFront Distribution - CDN proxying requests between API Gateway and S3.
+ * - Lambda - Runs the actual SvelteKit server.
+ * - API Gateway - Proxies requests to the Lambda.
+ * - S3 Bucket - Stores static  assets.
+ *
+ * This CDK app shows the simplest setup.
+ */
 async function main() {
   const stackName = `sparkle-starter-canary`;
 
@@ -10,22 +19,7 @@ async function main() {
 
   const stack = new Stack(app, stackName);
 
-  const sveltekit = new SvelteKit(stack, stackName);
-
-  const stage = process.env.STAGE ?? "dev";
-
-  if (!process.env.CERTIFICATE_ARN) {
-    throw new Error("Certificate ARN not provided.");
-  }
-
-  new ARecord(stack, "a-record", {
-    zone: HostedZone.fromHostedZoneAttributes(stack, "peterportal-hosted-zone", {
-      zoneName: `${stage === "prod" ? "" : `${stage}.`}zotmeet.com`,
-      hostedZoneId: process.env.HOSTED_ZONE_ID ?? "",
-    }),
-    recordName: `${stage === "prod" ? "" : `${stage}.`}api-next`,
-    target: RecordTarget.fromAlias(new CloudFrontTarget(sveltekit.distribution)),
-  });
+  new SvelteKit(stack, stackName);
 }
 
 main();
